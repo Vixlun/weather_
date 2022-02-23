@@ -1,17 +1,28 @@
 package com.hackerrank.weather.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hackerrank.weather.validation.TemperaturesSizeConstraint;
+
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@Entity
+@Table(name = "weather")
 public class Weather {
-    private Integer id;
-    private Date date;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+    @JsonFormat(pattern="yyyy-MM-dd", timezone = JsonFormat.DEFAULT_TIMEZONE)
+    private Date date;
     private Float lat;
     private Float lon;
     private String city;
     private String state;
 
+    @ElementCollection
+    @TemperaturesSizeConstraint
     private List<Double> temperatures;
 
     public Weather(Integer id, Date date, Float lat, Float lon, String city, String state, List<Double> temperatures) {
