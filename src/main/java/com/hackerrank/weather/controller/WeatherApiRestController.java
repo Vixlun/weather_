@@ -25,15 +25,24 @@ public class WeatherApiRestController {
         return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/weather")
-    public List<Weather> getWeatherWithDate(@RequestParam(name = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-                                            @RequestParam(name = "city", required = false) List<String> city,
-                                            @RequestParam(name = "sort", required = false) SortEnum sort) {
-        if(date != null) {
-            return repository.findByDate(date);
-        } else if(city != null) {
-            return repository.findByCityInIgnoreCase(city);
-        } else if(sort == SortEnum.asc) {
+    @GetMapping(value = "/weather")
+    public List<Weather> getWeatherWithDate() {
+        return repository.findAllByOrderByIdAsc();
+    }
+
+    @GetMapping(value = "/weather" , params = "date")
+    public List<Weather> getWeatherWithDate(@RequestParam(name = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        return repository.findByDate(date);
+    }
+
+    @GetMapping(value = "/weather" , params = "city")
+    public List<Weather> getWeatherWithDate(@RequestParam(name = "city", required = false) List<String> city) {
+        return repository.findByCityInIgnoreCase(city);
+    }
+
+    @GetMapping(value = "/weather" , params = "sort")
+    public List<Weather> getWeatherWithDate(@RequestParam(name = "sort", required = false) SortEnum sort) {
+        if(sort == SortEnum.asc) {
             return repository.findAllByOrderByDateAsc();
         } else if(sort == SortEnum.desc) {
             return repository.findAllByOrderByDateDesc();
